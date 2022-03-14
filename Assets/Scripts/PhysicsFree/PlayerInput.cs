@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputManager : MonoBehaviour
+public class PlayerInput : MonoBehaviour
 {
     public KeyCode MyKey;
-    public bool KeyDown = false;
+    public bool ChangeBuffered = false;
 
     void Update()
     {
         if (Input.GetKeyDown(MyKey)) 
         {
-            KeyDown = true;
+            ChangeBuffered = true;
         }
     }
 }
