@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+//This is just a proof of concept, We are not using this anymore. All movement detection has been moved to player manager.
+
 public class NoPhysicsMovement : MonoBehaviour
 {
     public GameObject KnobA;

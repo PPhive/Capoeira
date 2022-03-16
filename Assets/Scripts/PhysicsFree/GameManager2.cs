@@ -7,6 +7,9 @@ public class GameManager2 : MonoBehaviour
     public static GameManager2 Instance;
     public NoPhysicsMovement Player1;
 
+    //Temporary game ender after a player hits another;
+    private bool GameOver;
+
     void Awake()
     {
         Instance = this;
@@ -23,44 +26,48 @@ public class GameManager2 : MonoBehaviour
 
     private void FixedUpdate()
     {
-        for (int i = 0; i < PlayerManager.Instance.PlayerList.Count; i++)
+        if (!GameOver) 
         {
-            PlayerManager.Instance.PlayerUpdate(PlayerManager.Instance.PlayerList[i]);
-        }
-
-        for (int i = 0; i < PlayerManager.Instance.PlayerList.Count; i++)
-        {
-
-            for (int j = 0; j < PlayerManager.Instance.PlayerList.Count; j++)
+            for (int i = 0; i < PlayerManager.Instance.PlayerList.Count; i++)
             {
-                if (PlayerManager.Instance.PlayerList[i] != PlayerManager.Instance.PlayerList[j]) 
-                {
-                    bool DotIn = IsDotInTriangle(
-                                                PlayerManager.Instance.PlayerList[i].KnobRoot,
-                                                PlayerManager.Instance.PlayerList[j].KnobRoot,
-                                                PlayerManager.Instance.PlayerList[j].KnobMoveOld,
-                                                PlayerManager.Instance.PlayerList[j].KnobMoveNew
-                                                );
+                PlayerManager.Instance.PlayerUpdate(PlayerManager.Instance.PlayerList[i]);
+            }
 
-                    bool CrossOld = DoesTwoSegmentsIntersect(
-                                                            PlayerManager.Instance.PlayerList[i].KnobRoot,
-                                                            PlayerManager.Instance.PlayerList[i].KnobMoveOld,
-                                                            PlayerManager.Instance.PlayerList[j].KnobMoveOld,
-                                                            PlayerManager.Instance.PlayerList[j].KnobMoveNew
-                                                            );
-                    bool CrossNew = DoesTwoSegmentsIntersect(
-                                                            PlayerManager.Instance.PlayerList[i].KnobRoot,
-                                                            PlayerManager.Instance.PlayerList[i].KnobMoveNew,
-                                                            PlayerManager.Instance.PlayerList[j].KnobMoveOld,
-                                                            PlayerManager.Instance.PlayerList[j].KnobMoveNew
-                                                            );
-                    if (CrossNew || CrossNew || DotIn) 
+            for (int i = 0; i < PlayerManager.Instance.PlayerList.Count; i++)
+            {
+
+                for (int j = 0; j < PlayerManager.Instance.PlayerList.Count; j++)
+                {
+                    if (PlayerManager.Instance.PlayerList[i] != PlayerManager.Instance.PlayerList[j])
                     {
-                        PlayerManager.Instance.PlayerList[i].Input.gameObject.SetActive(false);
+                        bool DotIn = IsDotInTriangle(
+                                                    PlayerManager.Instance.PlayerList[i].KnobRoot,
+                                                    PlayerManager.Instance.PlayerList[j].KnobRoot,
+                                                    PlayerManager.Instance.PlayerList[j].KnobMoveOld,
+                                                    PlayerManager.Instance.PlayerList[j].KnobMoveNew
+                                                    );
+
+                        bool CrossOld = DoesTwoSegmentsIntersect(
+                                                                PlayerManager.Instance.PlayerList[i].KnobRoot,
+                                                                PlayerManager.Instance.PlayerList[i].KnobMoveOld,
+                                                                PlayerManager.Instance.PlayerList[j].KnobMoveOld,
+                                                                PlayerManager.Instance.PlayerList[j].KnobMoveNew
+                                                                );
+                        bool CrossNew = DoesTwoSegmentsIntersect(
+                                                                PlayerManager.Instance.PlayerList[i].KnobRoot,
+                                                                PlayerManager.Instance.PlayerList[i].KnobMoveNew,
+                                                                PlayerManager.Instance.PlayerList[j].KnobMoveOld,
+                                                                PlayerManager.Instance.PlayerList[j].KnobMoveNew
+                                                                );
+                        if (CrossNew || CrossNew || DotIn)
+                        {
+                            PlayerManager.Instance.PlayerList[i].Dead = true;
+                            GameOver = true;
+                        }
                     }
                 }
-            }  
-        }
+            }
+        } 
     }
 
     public bool IsDotInTriangle(Vector2 Dot, Vector2 A, Vector2 B, Vector2 C)

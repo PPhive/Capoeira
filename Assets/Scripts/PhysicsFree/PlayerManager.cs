@@ -14,6 +14,8 @@ public class PlayerManager : MonoBehaviour
             public Vector2 KnobMoveNew, KnobMoveOld, KnobRoot;
             public float Length, Angle;
             public float RotationSpeed;
+            public bool HoldingKey = false;
+            public bool Dead = false;
         }
 
     [SerializeField]
@@ -44,7 +46,25 @@ public class PlayerManager : MonoBehaviour
         if (PlayerAsking.Input.ChangeBuffered)
         {
             ChangeFeet(PlayerAsking);
+            PlayerAsking.HoldingKey = true;
         }
+        if (PlayerAsking.Input.ReleaseBuffered)
+        {
+            PlayerAsking.HoldingKey = false;
+            PlayerAsking.Input.ReleaseBuffered = false;
+        }
+
+        if (PlayerAsking.HoldingKey)
+        {
+            PlayerAsking.RotationSpeed = Mathf.Clamp(PlayerAsking.RotationSpeed + 180 * Time.deltaTime, 180f, 360f);
+            Debug.Log(PlayerAsking.RotationSpeed);
+        }
+        else 
+        {
+            PlayerAsking.RotationSpeed = Mathf.Clamp(PlayerAsking.RotationSpeed - 180 * Time.deltaTime, 180f, 360f);
+        }
+
+
         PlayerAsking.KnobMoveOld = PlayerAsking.KnobMoveNew;
         PlayerRotateAroundRootBySpeed(PlayerAsking);
     }
